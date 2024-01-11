@@ -50,13 +50,13 @@ app.post("/login", async (req, res) => {
       const { email, password } = req.body;
       let exists = await userModel.findOne({ email });
       if (email === "" || password === "") {
-        return res.status(400).json({ message: "Email and password required" });
+        return res.status(400).json({ message: "Email and password required" , status:400});
       } else if (!exists) {
-        return res.status(404).json({ message: "Email doesn't exist, Register First" });
+        return res.status(404).json({ message: "Email doesn't exist, Register First", status:400 });
       } else {
         const passwordMatch = await bcrypt.compare(password, exists.password);
         if (!passwordMatch) {
-            return res.status(400).json({ message: "Password doesn't match" });
+            return res.status(400).json({ message: "Password doesn't match" , status:400});
         }
         const payload = {
           user: {
@@ -72,7 +72,7 @@ app.post("/login", async (req, res) => {
             try {
               if (err) throw err;
               else {
-                await res.json({ token });
+                await res.json({ token, status:200, message:"User Login Successful!!" });
               }
             } catch (e) {
               console.log(e);
